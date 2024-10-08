@@ -4,13 +4,14 @@
     "description" : "An easy way for you to check the price of your favorite coins and tokens",
     "version" : "0.0.1",
     "action" :{
-        "default_popup" : "./src/pages/homepage/popup.html",
+        "default_popup" : "./src/pages/homepage/home.html",
         "default_icon": {
             "16": "./src/assets/images/CryptoStats-16.png",
             "32": "./src/assets/images/CryptoStats-32.png",
             "48": "./src/assets/images/CryptoStats-48.png",
             "128": "./src/assets/images/CryptoStats-128.png"
-        }
+        },
+        "default_title": "Get price information about your favorite tokens"
     },
     "background":{
         "service_worker":"./src/background.js"
