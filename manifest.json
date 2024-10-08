@@ -1,0 +1,24 @@
+{
+    "manifest_version" : 3,
+    "name" : "CryptoStats",
+    "description" : "An easy way for you to check the price of your favorite coins and tokens",
+    "version" : "0.0.1",
+    "action" :{
+        "default_popup" : "./src/pages/homepage/popup.html",
+        "default_icon": {
+            "16": "./src/assets/images/CryptoStats-16.png",
+            "32": "./src/assets/images/CryptoStats-32.png",
+            "48": "./src/assets/images/CryptoStats-48.png",
+            "128": "./src/assets/images/CryptoStats-128.png"
+        }
+    },
+    "background":{
+        "service_worker":"./src/background.js"
+    },
+    "permissions" : [
+        "tabs",
+        "scripting",
+        "activeTab",
+        "storage"
+    ]
+}
