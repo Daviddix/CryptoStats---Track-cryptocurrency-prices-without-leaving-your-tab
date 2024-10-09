@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CryptoStats</title>
+    <link rel="stylesheet" href="./styles.css">
+    <link rel="stylesheet" href="../../globals.css">
+</head>
+<body>
+
+    <div class="form-and-select">
+        <form>
+            <img src="../../assets/icons/search-page-icon.svg" alt="search-icon">
+    
+            <input type="search" name="search-favorite" placeholder="Search for your favorite coins" id="">
+        </form>
+
+        <select name="chain" id="">
+            <option value="All">All Chains</option>
+            <option value="TON">TON</option>
+            <option value="BNB">BNB</option>
+            <option value="Solana">Solana</option>
+            <option value="Base">Base</option>
+        </select>
+    </div>
+    
+    <div class="all-coins">
+        <div class="single-coin-container">
+            <div class="logo-and-name">
+                <img src="../../assets/images/logo.png" alt="coin logo">
+
+                <div class="name">
+                    <h1>Solana</h1>
+                    <p>SOL</p>
+                </div>
+            </div>
+
+            <div class="price-info">
+                <h1>$144.56</h1>
+                <p>+34%</p>
+            </div>
+
+            <img src="../../assets/icons/star-inactive-icon.svg" alt="star icon">
+        </div>
+    </div>
+    
+
+    <div class="tabs">
+        <button>
+            <a href="../homepage/home.html">
+            <img src="../../assets/icons/star-active-tab-icon.svg" alt="star icon">
+            <p>Favorites</p>
+        </a>
+        </button>
+
+        <button class="active">
+            <p>Search</p>
+            <img src="../../assets/icons/search-tab-icon.svg" alt="search icon">
+        </button>
+    </div>
+    
+</body>
+</html>

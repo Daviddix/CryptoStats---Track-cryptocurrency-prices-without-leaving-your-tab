@@ -18,8 +18,12 @@
     },
     "permissions" : [
         "tabs",
+        "sidePanel",
         "scripting",
         "activeTab",
         "storage"
-    ]
+    ],
+    "side_panel" : {
+        "default_path" : "./src/pages/homepage/home.html"
+    }
 }
