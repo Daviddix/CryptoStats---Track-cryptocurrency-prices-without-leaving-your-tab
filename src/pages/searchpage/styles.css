@@ -1,3 +1,13 @@
+@font-face {
+    font-family: apfl-regular;
+    src: url("../../assets/font/ApfelGrotezk-Regular.otf");
+}
+
+@font-face {
+    font-family: apfl-medium;
+    src: url("../../assets/font/ApfelGrotezk-Mittel.otf");
+}
+
 .form-and-select{
     display: flex;
     align-items: center;
@@ -40,8 +50,29 @@
     column-gap: 1rem;
 }
 
-.logo-and-name > img{
-    width:3.5rem;
+.logo-and-name .logo-container{
+    width:4rem; 
+    height:4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background-color: black;
+    border: 1px solid var(--border-color);
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    -ms-border-radius: 50%;
+    -o-border-radius: 50%;
+}
+
+.logo-container img{
+    width:2rem;
+    height:2rem;
+    border-radius: 50%;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    -ms-border-radius: 50%;
+    -o-border-radius: 50%;
 }
 
 .single-coin-container .price-info{
@@ -59,9 +90,10 @@
 
 .name h1, .price-info h1
 {
-    font-size: 1.4rem;
+    font-size: 1.3rem;
     color: var(--main-text-color);
     font-weight: normal;
+    margin: 0 0 .2rem 0;
 }
 
 .name p, .price-info p
@@ -72,6 +104,13 @@
 
 .price-info p{
     text-align: right;
-    color: var(--error-color);
     font-family: apfl-medium;
+}
+
+.price-info p.bad{
+    color: var(--error-color);
+}
+
+.price-info p.good{
+    color: var(--success-color);
 }

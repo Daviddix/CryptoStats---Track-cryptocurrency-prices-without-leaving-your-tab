@@ -8,6 +8,11 @@
     --sub-text-color : #C3C3C3;
     --success-color : #268244;
     --error-color: #C43D3D;
+
+    --loader-bg : linear-gradient(90deg,
+    var(--l2-elevation) 25%,
+    var(--l1-elevation) 50%,
+    var(--l2-elevation) 75%);
 }
 
 *, *::before, *::after{
@@ -17,23 +22,12 @@
     box-sizing: border-box;
 }
 
-@font-face {
-    font-family: apfl-regular;
-    src: url("../../assets/font/ApfelGrotezk-Regular.otf");
-}
-
-@font-face {
-    font-family: apfl-medium;
-    src: url("../../assets/font/ApfelGrotezk-Mittel.otf");
-}
-
 html{
     font-size: 62.5%;
 }
 
 body{
-    width: 40rem;
-    min-width:10rem;
+    width: 38rem;
     padding: 2rem;
     background-color: hsl(252, 20%, 5%);
     margin: auto;
@@ -63,6 +57,12 @@ form input{
     flex:1;
     background-color: transparent;
     border: none;
+    outline: none;
+    color: var(--main-text-color);
+}
+
+form:has(input:focus){
+    outline: 2px solid white;
 }
 
 form input::placeholder{
@@ -71,6 +71,15 @@ form input::placeholder{
     font-size: 1.2rem;
     opacity: .7;
     color: #fff;
+}
+
+.empty{
+    font-size: 1.3rem;
+    color: var(--main-text-color);
+    max-width: 90%;
+    margin: 2rem;
+    text-align: center;
+    opacity: .8;
 }
 
 .tabs{
@@ -122,10 +131,33 @@ form input::placeholder{
 }
 
 .tabs button p{
-    font-size: 1.4rem;
+    font-size: 1.2rem;
     color: var(--main-text-color);
 }
 
 .tabs button:not(.active) p{
     display: none;
 }
+
+.loader{
+    width:100%;
+    height:5rem;
+    background-image: var(--loader-bg);
+    border-radius:1rem;
+    -webkit-border-radius:1rem;
+    -moz-border-radius:1rem;
+    -ms-border-radius:1rem;
+    -o-border-radius:1rem;
+    margin: 1rem 0 1.5rem;
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+    0% {
+      background-position: 200% 0;
+    }
+    100% {
+      background-position: -200% 0;
+    }
+  }

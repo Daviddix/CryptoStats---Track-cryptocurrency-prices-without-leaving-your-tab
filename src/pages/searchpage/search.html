@@ -10,46 +10,34 @@
 <body>
 
     <div class="form-and-select">
-        <form>
+        <form class="search-all-form">
             <img src="../../assets/icons/search-page-icon.svg" alt="search-icon">
     
-            <input type="search" name="search-favorite" placeholder="Search for your favorite coins" id="">
+            <input required type="search" name="search-favorite" placeholder="Search for your favorite coins" id="search-all">
         </form>
 
-        <select name="chain" id="">
-            <option value="All">All Chains</option>
-            <option value="TON">TON</option>
-            <option value="BNB">BNB</option>
-            <option value="Solana">Solana</option>
-            <option value="Base">Base</option>
+        <select name="chain" id="category-selector">
+            <option value="All">All Coins</option>
+            <option value="Layer 1">Layer 1</option>
+            <option value="Layer 2">Layer 2</option>
+            <option value="DePIN">DePIN</option>
+            <option value="GameFi">GameFI</option>
+            <option value="Storage">Storage</option>
+            <option value="Oracle">Oracle</option>
+            <option value="Metaverse">Metaverse</option>
+            <option value="SocialFi">SocialFi</option>
         </select>
     </div>
     
     <div class="all-coins">
-        <div class="single-coin-container">
-            <div class="logo-and-name">
-                <img src="../../assets/images/logo.png" alt="coin logo">
-
-                <div class="name">
-                    <h1>Solana</h1>
-                    <p>SOL</p>
-                </div>
-            </div>
-
-            <div class="price-info">
-                <h1>$144.56</h1>
-                <p>+34%</p>
-            </div>
-
-            <img src="../../assets/icons/star-inactive-icon.svg" alt="star icon">
-        </div>
+        
     </div>
     
 
     <div class="tabs">
         <button>
             <a href="../homepage/home.html">
-            <img src="../../assets/icons/star-active-tab-icon.svg" alt="star icon">
+            <img src="../../assets/icons/star-inactive-icon.svg" alt="star icon">
             <p>Favorites</p>
         </a>
         </button>
@@ -61,4 +49,6 @@
     </div>
     
 </body>
+
+<script src="./script.js"></script>
 </html>
