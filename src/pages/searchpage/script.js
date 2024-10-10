@@ -16,35 +16,43 @@ searchForm.addEventListener("submit", (e)=>{
     searchForACoin(searchValueElement.value, selectedCategory.value, options)
 })
 
+searchForm.addEventListener("input", async (e)=>{
+    if(e.target.value == ""){
+        await getTrendingCoinsFromAllChains()
+    }
+})
+
+allCoinsContainer.addEventListener("click", (e)=>{
+    console.log(e.target)
+    const activeStar = "chrome-extension://ppkjmjoglhflmmjgbkepeaakbnphlpgh/src/assets/icons/star-active-tab-icon.svg"
+
+    const inactiveStar = "chrome-extension://ppkjmjoglhflmmjgbkepeaakbnphlpgh/src/assets/icons/star-inactive-icon.svg"
+
+
+    if (e.target.className == "star-icon"){
+        console.log(e.target.src)
+        const starIcon = e.target
+
+        if(starIcon.src == activeStar){
+            const coinName = starIcon.previousElementSibling.previousElementSibling.children[1].firstElementChild.innerHTML
+
+            removeFromFavorites(coinName)
+            starIcon.src = inactiveStar
+        }else{
+            const coinName = starIcon.previousElementSibling.previousElementSibling.children[1].firstElementChild.innerHTML
+
+            addToFavorite(coinName)
+
+             starIcon.src = activeStar
+        }
+    }
+})
+
 async function getTrendingCoinsFromAllChains(){
     try{
     const {coins} = JSON.parse(localStorage.getItem("test-all"))
-    let a = ""
-    coins.forEach(coinData => {
-        let status = coinData.item.data.price_change_percentage_24h.usd > 0 ? "good" : "bad"
-        a += `
-        <div class="single-coin-container">
-            <div class="logo-and-name">
-                <div class="logo-container">
-                <img src=${coinData.item.large} alt="${coinData.item.name} logo">
-                </div>
-
-                <div class="name">
-                    <h1>${coinData.item.name}</h1>
-                    <p>${coinData.item.symbol}</p>
-                </div>
-            </div>
-
-            <div class="price-info">
-                <h1>$${coinData.item.data.price.toFixed(2)}</h1>
-                <p class=${status}>${status == "good"? "+" : ""}${coinData.item.data.price_change_percentage_24h.usd.toFixed(2)}%</p>
-            </div>
-
-            <img src="../../assets/icons/star-inactive-icon.svg" alt="star icon">
-        </div>
-        `
-    })
-    allCoinsContainer.innerHTML = a
+    
+    allCoinsContainer.innerHTML = renderTrendingCoins(coins)
 
      }
     catch(err){
@@ -93,45 +101,7 @@ async function getSearchedCoinInfo(names, category, options){
 
         console.log(coinsInfo)
 
-        let a = ""
-
-        coinsInfo.forEach((coinInfo)=>{
-            const status = coinInfo.price_change_percentage_24h > 0 ? "good" : "bad"
-
-            const statusSymbol = status == "good"? "+" : ""
-
-            const priceChange = coinInfo.price_change_percentage_24h? coinInfo.price_change_percentage_24h.toFixed(2) : false
-
-            const price = new Intl.NumberFormat().format(
-              Math.round(coinInfo.current_price) >= 1
-                ? coinInfo.current_price?.toFixed(2)
-                : coinInfo.current_price?.toFixed(5)
-            )
-
-            a += `
-        <div class="single-coin-container">
-            <div class="logo-and-name">
-                <div class="logo-container">
-                <img src=${coinInfo.image} alt="${coinInfo.name} logo">
-                </div>
-
-                <div class="name">
-                    <h1>${coinInfo.name}</h1>
-                    <p>${coinInfo.symbol.toUpperCase()}</p>
-                </div>
-            </div>
-
-            <div class="price-info">
-                <h1>$${price}</h1>
-                <p class=${status}>${statusSymbol}${priceChange || 0}%</p>
-            </div>
-
-            <img src="../../assets/icons/star-inactive-icon.svg" alt="star icon">
-        </div>
-        `
-        })
-
-        allCoinsContainer.innerHTML = a
+        allCoinsContainer.innerHTML = renderSearchedCoins(coinsInfo)
     }
     catch(err){
         const causeOfError = err.cause
@@ -178,6 +148,99 @@ function isEmptySearch(){
     </p>
     `
         allCoinsContainer.innerHTML = a
+}
+
+async function addToFavorite(coinName){
+    const previousFavoritesFromStorage = await chrome.storage.local.get(["favoriteCoins"])
+
+    const previousFavoritesArray = previousFavoritesFromStorage.favoriteCoins || []
+
+    const newArray = [...previousFavoritesArray, coinName]
+
+    await chrome.storage.local.set({favoriteCoins : newArray})
+}
+
+async function removeFromFavorites(coinName){
+    const previousFavoritesFromStorage = await chrome.storage.local.get(["favoriteCoins"])
+
+    const previousFavoritesArray = previousFavoritesFromStorage.favoriteCoins || []
+
+    const newArray = previousFavoritesArray.filter((name)=> name !== coinName)
+
+    await chrome.storage.local.set({favoriteCoins : newArray})
+}
+
+function renderSearchedCoins(coinsInfo){
+    let a = ""
+
+    coinsInfo.forEach((coinInfo)=>{
+            const status = coinInfo.price_change_percentage_24h > 0 ? "good" : "bad"
+
+            const statusSymbol = status == "good"? "+" : ""
+
+            const priceChange = coinInfo.price_change_percentage_24h? coinInfo.price_change_percentage_24h.toFixed(2) : false
+
+            const price = new Intl.NumberFormat().format(
+              Math.round(coinInfo.current_price) >= 1
+                ? coinInfo.current_price?.toFixed(2)
+                : coinInfo.current_price?.toFixed(5)
+            )
+
+            a += `
+        <div class="single-coin-container">
+            <div class="logo-and-name">
+                <div class="logo-container">
+                <img src=${coinInfo.image} alt="${coinInfo.name} logo">
+                </div>
+
+                <div class="name">
+                    <h1>${coinInfo.name}</h1>
+                    <p>${coinInfo.symbol.toUpperCase()}</p>
+                </div>
+            </div>
+
+            <div class="price-info">
+                <h1>$${price}</h1>
+                <p class=${status}>${statusSymbol}${priceChange || 0}%</p>
+            </div>
+
+            <img src="../../assets/icons/star-inactive-icon.svg" alt="star icon" class="star-icon">
+        </div>
+        `
+    })
+
+    return a
+}
+
+function renderTrendingCoins(coins){
+    let a = ""
+
+    coins.forEach(coinData => {
+        let status = coinData.item.data.price_change_percentage_24h.usd > 0 ? "good" : "bad"
+        a += `
+        <div class="single-coin-container">
+            <div class="logo-and-name">
+                <div class="logo-container">
+                <img src=${coinData.item.large} alt="${coinData.item.name} logo">
+                </div>
+
+                <div class="name">
+                    <h1>${coinData.item.name}</h1>
+                    <p>${coinData.item.symbol}</p>
+                </div>
+            </div>
+
+            <div class="price-info">
+                <h1>$${coinData.item.data.price.toFixed(2)}</h1>
+                <p class=${status}>${status == "good"? "+" : ""}${coinData.item.data.price_change_percentage_24h.usd.toFixed(2)}%</p>
+            </div>
+
+            <img src="../../assets/icons/star-inactive-icon.svg" alt="star icon" class="star-icon">
+        </div>
+        `
+    })
+
+    return a
 }
 
 getTrendingCoinsFromAllChains()
