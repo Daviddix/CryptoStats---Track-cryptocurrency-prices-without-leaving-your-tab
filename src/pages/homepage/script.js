@@ -85,11 +85,15 @@ function renderFavoriteCoins(coinsInfo){
 
             const priceChange = coinInfo.price_change_percentage_24h? coinInfo.price_change_percentage_24h.toFixed(2) : false
 
-            const price = new Intl.NumberFormat().format(
-              Math.round(coinInfo.current_price) >= 1
-                ? coinInfo.current_price?.toFixed(3)
-                : coinInfo.current_price?.toFixed(5)
-            )
+            let price = Math.round(coinInfo.current_price) >= 1
+          ? coinInfo.current_price.toFixed(2)
+          : coinInfo.current_price.toFixed(5)
+
+      if(price > 999){
+          price = new Intl.NumberFormat().format(price)
+      }else if(price == 0){
+        price = "<0.000001"
+    }
 
             a += `
         <div class="single-coin-container">

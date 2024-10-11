@@ -11,13 +11,11 @@ const options = {
     },
 }
 
-//TODO:SHOW FAVORITE STAR ICON WHEN YOU SEARCH FOR A COIN THAT IS IN YOUR FAVORITE
-
 searchForm.addEventListener("submit", (e)=>{
     e.preventDefault()
     searchForACoin(searchValueElement.value, selectedCategory.value, options)
 })
-
+ 
 searchForm.addEventListener("input", async (e)=>{
     if(e.target.value == ""){
         await getTrendingCoinsFromAllChains()
@@ -30,7 +28,6 @@ allCoinsContainer.addEventListener("click", (e)=>{
 
     const inactiveStar = "chrome-extension://ppkjmjoglhflmmjgbkepeaakbnphlpgh/src/assets/icons/star-inactive-icon.svg"
 
-
     if (e.target.className == "star-icon"){
         console.log(e.target.src)
         const starIcon = e.target
@@ -39,7 +36,7 @@ allCoinsContainer.addEventListener("click", (e)=>{
             const coinName = starIcon.previousElementSibling.previousElementSibling.parentElement.dataset.id
 
             removeFromFavorites(coinName)
-
+            
             starIcon.src = inactiveStar
         }else{
             const coinName = starIcon.previousElementSibling.previousElementSibling.parentElement.dataset.id
@@ -52,10 +49,21 @@ allCoinsContainer.addEventListener("click", (e)=>{
 })
 
 async function getTrendingCoinsFromAllChains(){
+    isLoading()
     try{
-    const {coins} = JSON.parse(localStorage.getItem("test-all"))
+        const coinsInStorage = await chrome.storage.local.get(["favoriteCoins"])
+
+        const coinsInStorageArray = coinsInStorage.favoriteCoins || []
+
+    const rawFetch = await fetch('https://api.coingecko.com/api/v3/search/trending', options)
+
+    const {coins} = await rawFetch.json()
+
+    if(!rawFetch.ok){
+        throw new Error("error when getting trending coins")
+    }
     
-    allCoinsContainer.innerHTML = renderTrendingCoins(coins)
+    allCoinsContainer.innerHTML = renderTrendingCoins(coins, coinsInStorageArray)
 
      }
     catch(err){
@@ -181,11 +189,16 @@ function renderSearchedCoins(coinsInfo){
 
             const priceChange = coinInfo.price_change_percentage_24h? coinInfo.price_change_percentage_24h.toFixed(2) : false
 
-            const price = new Intl.NumberFormat().format(
-              Math.round(coinInfo.current_price) >= 1
+            let price = Math.round(coinInfo.current_price) >= 1
                 ? coinInfo.current_price?.toFixed(2)
                 : coinInfo.current_price?.toFixed(5)
-            )
+
+            if(price > 999){
+                price = new Intl.NumberFormat().format(price)
+            }else if(price == 0){
+                price = "<0.000001"
+            }
+            
 
             a += `
         <div class="single-coin-container" data-id=${coinInfo.id}>
@@ -213,13 +226,29 @@ function renderSearchedCoins(coinsInfo){
     return a
 }
 
-function renderTrendingCoins(coins){
+function renderTrendingCoins(coins, favoriteCoinsArray){
     let a = ""
+
+    
 
     coins.forEach(coinData => {
         let status = coinData.item.data.price_change_percentage_24h.usd > 0 ? "good" : "bad"
+
+        const isFav = favoriteCoinsArray.includes(coinData.item.id)
+
+        let price =  
+        Math.round(coinData.item.data.price) >= 1
+          ? coinData.item.data.price.toFixed(2)
+          : coinData.item.data.price.toFixed(5)
+
+      if(price > 999){
+          price = new Intl.NumberFormat().format(price)
+      }else if(price == 0){
+        price = "<0.000001"
+    }
+
         a += `
-        <div class="single-coin-container">
+        <div class="single-coin-container" data-id=${coinData.item.id}>
             <div class="logo-and-name">
                 <div class="logo-container">
                 <img src=${coinData.item.large} alt="${coinData.item.name} logo">
@@ -232,11 +261,11 @@ function renderTrendingCoins(coins){
             </div>
 
             <div class="price-info">
-                <h1>$${coinData.item.data.price.toFixed(2)}</h1>
+                <h1>$${price}</h1>
                 <p class=${status}>${status == "good"? "+" : ""}${coinData.item.data.price_change_percentage_24h.usd.toFixed(2)}%</p>
             </div>
 
-            <img src="../../assets/icons/star-inactive-icon.svg" alt="star icon" class="star-icon">
+            <img src=${isFav ? "../../assets/icons/star-active-tab-icon.svg" : "../../assets/icons/star-inactive-icon.svg"} alt="star icon" class="star-icon">
         </div>
         `
     })
