@@ -11,6 +11,8 @@ const options = {
     },
 }
 
+//TODO:SHOW FAVORITE STAR ICON WHEN YOU SEARCH FOR A COIN THAT IS IN YOUR FAVORITE
+
 searchForm.addEventListener("submit", (e)=>{
     e.preventDefault()
     searchForACoin(searchValueElement.value, selectedCategory.value, options)
@@ -34,12 +36,13 @@ allCoinsContainer.addEventListener("click", (e)=>{
         const starIcon = e.target
 
         if(starIcon.src == activeStar){
-            const coinName = starIcon.previousElementSibling.previousElementSibling.children[1].firstElementChild.innerHTML
+            const coinName = starIcon.previousElementSibling.previousElementSibling.parentElement.dataset.id
 
             removeFromFavorites(coinName)
+
             starIcon.src = inactiveStar
         }else{
-            const coinName = starIcon.previousElementSibling.previousElementSibling.children[1].firstElementChild.innerHTML
+            const coinName = starIcon.previousElementSibling.previousElementSibling.parentElement.dataset.id
 
             addToFavorite(coinName)
 
@@ -76,7 +79,7 @@ async function searchForACoin(searchQuery, categoryQuery, options){
             return coin.id
         })
 
-        const coinNamesFetchUrl = coinNames.join("%2C%20")
+        const coinNamesFetchUrl = coinNames.join("%2C")
 
 
         await getSearchedCoinInfo(coinNamesFetchUrl, categoryQuery, options)
@@ -98,8 +101,6 @@ async function getSearchedCoinInfo(names, category, options){
         if(!rawFetch.ok){
             throw new Error("searching error", {cause : coinsInfo})
         }
-
-        console.log(coinsInfo)
 
         allCoinsContainer.innerHTML = renderSearchedCoins(coinsInfo)
     }
@@ -187,7 +188,7 @@ function renderSearchedCoins(coinsInfo){
             )
 
             a += `
-        <div class="single-coin-container">
+        <div class="single-coin-container" data-id=${coinInfo.id}>
             <div class="logo-and-name">
                 <div class="logo-container">
                 <img src=${coinInfo.image} alt="${coinInfo.name} logo">
