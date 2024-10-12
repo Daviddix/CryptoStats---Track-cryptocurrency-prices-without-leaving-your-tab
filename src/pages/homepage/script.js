@@ -12,9 +12,7 @@ async function getFavoriteCoinsFromStorageAndDisplayThem(){
         }else{
             isLoading()
 
-            const coinNamesFetchUrl = coinsInStorageArray.join("%2C").toLowerCase()
- 
-            const rawFetch = await fetch(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${coinNamesFetchUrl}&sparkline=true`, options)
+            const rawFetch = await fetch(`http://localhost:3000/api/displayFavorite?coinNames=${coinsInStorageArray}`)
 
             const coinsInfo = await rawFetch.json()
 
