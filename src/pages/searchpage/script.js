@@ -3,13 +3,6 @@ const searchForm = document.querySelector(".search-all-form")
 const searchValueElement = document.querySelector("#search-all") 
 const selectedCategory = document.querySelector("#category-selector")
 
-const options = {
-    method: "GET",
-    headers: {
-      accept: "application/json",
-      "x-cg-demo-api-key": "",
-    },
-}
 
 searchForm.addEventListener("submit", (e)=>{
     e.preventDefault()
@@ -55,9 +48,9 @@ async function getTrendingCoinsFromAllChains(){
 
         const coinsInStorageArray = coinsInStorage.favoriteCoins || []
 
-    const rawFetch = await fetch('https://api.coingecko.com/api/v3/search/trending', options)
+    const rawFetch = await fetch("http://localhost:3000/api/getTrendingCoins")
 
-    const {coins} = await rawFetch.json()
+    const coins = await rawFetch.json()
 
     if(!rawFetch.ok){
         throw new Error("error when getting trending coins")

@@ -1,14 +1,6 @@
 const favoriteCoinsContainer = document.querySelector(".other-coins")
 const mainCoinContainer = document.querySelector(".main-goes-here")
 
-const options = {
-    method: "GET",
-    headers: {
-      accept: "application/json",
-      "x-cg-demo-api-key": " ",
-    },
-}
-
 async function getFavoriteCoinsFromStorageAndDisplayThem(){
     try{
         const coinsInStorage = await chrome.storage.local.get(["favoriteCoins"])
@@ -201,7 +193,6 @@ function draw(dataArray, numPoints, priceChange){
       datasets: [
         {
           label: "",
-          borderColor: "red",
           tension: 0,
           borderWidth: 2,
           data: [...dataArray],
