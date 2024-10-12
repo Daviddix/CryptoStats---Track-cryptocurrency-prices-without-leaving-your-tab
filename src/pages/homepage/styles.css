@@ -185,3 +185,7 @@
 {
     color: var(--success-color);
 }
+
+p > a{
+    color : #92b8f1;
+}

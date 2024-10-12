@@ -1,5 +1,24 @@
 const favoriteCoinsContainer = document.querySelector(".other-coins")
 const mainCoinContainer = document.querySelector(".main-goes-here")
+const favoriteCoinsForm = document.querySelector("#fav-search")
+const favoriteCoinsSearchBar = document.querySelector("#fav-search input")
+
+favoriteCoinsForm.addEventListener("submit", (e)=>{
+  e.preventDefault()
+  searchForFavoriteCoin(favoriteCoinsSearchBar.value)
+})
+
+function searchForFavoriteCoin(searchParameter){
+  const filteredCoins = allCoins.filter((coin)=> coin.name.toLowerCase().includes(searchParameter.toLowerCase()))
+
+  if(filteredCoins.length == 0){
+    return isEmptyFavoriteSearch()
+  }
+
+  favoriteCoinsContainer.innerHTML = renderFavoriteCoins(filteredCoins)
+}
+
+let allCoins = []
 
 async function getFavoriteCoinsFromStorageAndDisplayThem(){
     try{
@@ -19,6 +38,8 @@ async function getFavoriteCoinsFromStorageAndDisplayThem(){
         if(!rawFetch.ok){
             throw new Error("searching error")
         }
+
+        allCoins = coinsInfo
 
         const [mainCoin] = coinsInfo.splice(0, 1)
 
@@ -63,11 +84,18 @@ function isEmptyFavorite(){
     favoriteCoinsContainer.innerHTML = a
 }
 
+function isEmptyFavoriteSearch(){
+  const a = `<p class="empty">
+      Oops, seems like we couldn't find the coin you were looking for. Try Searching for it in the <a href="../searchpage/search.html"> Search page </a>
+  </p>
+  `
+  favoriteCoinsContainer.innerHTML = a
+}
+
 function isError(errorMessage="Seems like an error ocurred, please try reloading the extension", type="strong"){
   const a = `<p class=${type == "strong" ? "error" : "empty"}>${errorMessage}</p>`
   favoriteCoinsContainer.innerHTML = a
 }
-
 
 function renderFavoriteCoins(coinsInfo){
     let a = ""
