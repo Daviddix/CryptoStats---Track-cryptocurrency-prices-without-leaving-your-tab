@@ -31,7 +31,7 @@ async function getFavoriteCoinsFromStorageAndDisplayThem(){
         }else{
             isLoading()
 
-            const rawFetch = await fetch(`http://localhost:3000/api/displayFavorite?coinNames=${coinsInStorageArray}`)
+            const rawFetch = await fetch(` https://cryptostats-backend.onrender.com/api/displayFavorite?coinNames=${coinsInStorageArray}`)
 
             const coinsInfo = await rawFetch.json()
 
