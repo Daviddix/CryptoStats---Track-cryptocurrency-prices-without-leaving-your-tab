@@ -82,6 +82,15 @@ form input::placeholder{
     opacity: .8;
 }
 
+.error{
+    font-size: 1.3rem;
+    color: var(--error-color);
+    max-width: 90%;
+    margin: 2rem;
+    text-align: center;
+    opacity: .8;
+}
+
 .tabs{
     background-color: var(--l1-elevation);
     max-width: fit-content;

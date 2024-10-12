@@ -16,10 +16,10 @@ searchForm.addEventListener("input", async (e)=>{
 })
 
 allCoinsContainer.addEventListener("click", (e)=>{
-    console.log(e.target)
-    const activeStar = "chrome-extension://ppkjmjoglhflmmjgbkepeaakbnphlpgh/src/assets/icons/star-active-tab-icon.svg"
+    console.log(e.target.src)
+    const activeStar = "chrome-extension://apnalilblhlemleggbcddjpmkciocimc/src/assets/icons/star-active-tab-icon.svg"
 
-    const inactiveStar = "chrome-extension://ppkjmjoglhflmmjgbkepeaakbnphlpgh/src/assets/icons/star-inactive-icon.svg"
+    const inactiveStar = "chrome-extension://apnalilblhlemleggbcddjpmkciocimc/src/assets/icons/star-inactive-icon.svg"
 
     if (e.target.className == "star-icon"){
         console.log(e.target.src)
@@ -60,7 +60,7 @@ async function getTrendingCoinsFromAllChains(){
 
      }
     catch(err){
-        console.log(err)
+        isError()
     }
 }
 
@@ -72,11 +72,24 @@ async function searchForACoin(searchQuery, categoryQuery){
 
         const coinsInfo = await rawFetch.json()
 
+        if(!rawFetch.ok){
+            if(rawFetch.status == 404){
+                 throw new Error("empty results", {cause : coinsInfo})
+            }else{
+                throw new Error("Typical Error")
+            }
+        }
+
+
         allCoinsContainer.innerHTML = renderSearchedCoins(coinsInfo)
 
     }
     catch(err){
-        console.log(err)
+        if(err.cause?.reason){
+            return isError(err.cause.reason , "light")
+        }else{
+            return isError()
+        }
     }
 }
 
@@ -105,6 +118,11 @@ function isLoading(){
         
     </div>
     `
+        allCoinsContainer.innerHTML = a
+}
+
+function isError(errorMessage="Seems like an error ocurred, please try reloading the extension", type="strong"){
+    const a = `<p class=${type == "strong" ? "error" : "empty"}>${errorMessage}</p>`
         allCoinsContainer.innerHTML = a
 }
 
