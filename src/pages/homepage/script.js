@@ -17,7 +17,7 @@ async function getFavoriteCoinsFromStorageAndDisplayThem(){
             const coinsInfo = await rawFetch.json()
 
         if(!rawFetch.ok){
-            throw new Error("searching error", {cause : coinsInfo})
+            throw new Error("searching error")
         }
 
         const [mainCoin] = coinsInfo.splice(0, 1)
@@ -29,11 +29,9 @@ async function getFavoriteCoinsFromStorageAndDisplayThem(){
         favoriteCoinsContainer.innerHTML = renderFavoriteCoins(coinsInfo)
 
         }
-        
-
     }
     catch (err){
-        console.log(err)
+      return isError()
     }
 }
 
@@ -64,6 +62,12 @@ function isEmptyFavorite(){
     `
     favoriteCoinsContainer.innerHTML = a
 }
+
+function isError(errorMessage="Seems like an error ocurred, please try reloading the extension", type="strong"){
+  const a = `<p class=${type == "strong" ? "error" : "empty"}>${errorMessage}</p>`
+  favoriteCoinsContainer.innerHTML = a
+}
+
 
 function renderFavoriteCoins(coinsInfo){
     let a = ""
