@@ -6,7 +6,7 @@ const selectedCategory = document.querySelector("#category-selector")
 
 searchForm.addEventListener("submit", (e)=>{
     e.preventDefault()
-    searchForACoin(searchValueElement.value, selectedCategory.value, options)
+    searchForACoin(searchValueElement.value, selectedCategory.value)
 })
  
 searchForm.addEventListener("input", async (e)=>{
@@ -64,55 +64,19 @@ async function getTrendingCoinsFromAllChains(){
     }
 }
 
-async function searchForACoin(searchQuery, categoryQuery, options){
+async function searchForACoin(searchQuery, categoryQuery){
     try{
         isLoading()
 
-        const rawFetch = await fetch(`https://api.coingecko.com/api/v3/search?query=${searchQuery}`, options)
+        const rawFetch = await fetch(`http://localhost:3000/api/search?searchQuery=${searchQuery}&categoryQuery=${categoryQuery}`)
 
-        const {coins} = await rawFetch.json()
+        const coinsInfo = await rawFetch.json()
 
-        if(!rawFetch.ok){
-            throw new Error("searching error")
-        }
-
-        const coinNames = coins.map((coin)=>{
-            return coin.id
-        })
-
-        const coinNamesFetchUrl = coinNames.join("%2C")
-
-
-        await getSearchedCoinInfo(coinNamesFetchUrl, categoryQuery, options)
+        allCoinsContainer.innerHTML = renderSearchedCoins(coinsInfo)
 
     }
     catch(err){
         console.log(err)
-    }
-}
-
-async function getSearchedCoinInfo(names, category, options){
-      const searchCategory = category == "All" ? "" : `&category=${category}`
-
-    try{
-        const rawFetch = await fetch(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${names}${searchCategory}`, options)
-
-        const coinsInfo = await rawFetch.json()
-
-        if(!rawFetch.ok){
-            throw new Error("searching error", {cause : coinsInfo})
-        }
-
-        allCoinsContainer.innerHTML = renderSearchedCoins(coinsInfo)
-    }
-    catch(err){
-        const causeOfError = err.cause
-        if(causeOfError.error == "Not Found"){
-            isEmptySearch()
-        } else{
-            console.log(err)
-            console.log(err.cause)
-        }
     }
 }
 
