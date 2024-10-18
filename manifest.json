@@ -18,10 +18,7 @@
         "service_worker":"./src/background.js"
     },
     "permissions" : [
-        "tabs",
         "sidePanel",
-        "scripting",
-        "activeTab",
         "storage"
     ],
     "side_panel" : {

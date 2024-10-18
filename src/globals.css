@@ -66,7 +66,7 @@ form:has(input:focus){
 }
 
 form input::placeholder{
-    font-family:apfl;
+    font-family:apfl-regular;
     font-weight: 600;
     font-size: 1.2rem;
     opacity: .7;
