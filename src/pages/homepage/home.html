@@ -8,12 +8,24 @@
     <link rel="stylesheet" href="../../globals.css">
 </head>
 <body>
-
-    <form id="fav-search">
-        <img src="../../assets/icons/search-page-icon.svg" alt="search-icon">
-
-        <input required type="search" name="search-favorite" placeholder="Search for your favorite coins">
-    </form>
+    <div class="form-and-select">
+        <form id="fav-search">
+            <img src="../../assets/icons/search-page-icon.svg" alt="search-icon">
+    
+            <input required type="search" name="search-favorite" placeholder="Search for your favorite coins">
+        </form>
+    
+        <select name="currency" id="currency-selector">
+            <option value="usd">USD</option>
+            <option value="ngn">NGN</option>
+            <option value="eur">EUR</option>
+            <option value="aud">AUD</option>
+            <option value="php">PHP</option>
+            <option value="aed">AED</option>
+            <option value="nzd">NZD</option>
+            <option value="btc">BTC</option>
+        </select>
+    </div>
 
     <div class="main-goes-here">
 

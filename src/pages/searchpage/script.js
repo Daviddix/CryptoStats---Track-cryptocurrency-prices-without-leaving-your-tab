@@ -48,15 +48,15 @@ async function getTrendingCoinsFromAllChains(){
 
         const coinsInStorageArray = coinsInStorage.favoriteCoins || []
 
-    const rawFetch = await fetch(" https://cryptostats-backend.onrender.com/api/getTrendingCoins")
+        const rawFetch = await fetch("http://localhost:3000/api/getTrendingCoins")
 
-    const coins = await rawFetch.json()
+        const coins = await rawFetch.json()
 
-    if(!rawFetch.ok){
-        throw new Error("error when getting trending coins")
-    }
-    
-    allCoinsContainer.innerHTML = renderTrendingCoins(coins, coinsInStorageArray)
+        if(!rawFetch.ok){
+            throw new Error("error when getting trending coins")
+        }
+        
+        allCoinsContainer.innerHTML = renderTrendingCoins(coins, coinsInStorageArray)
 
      }
     catch(err){
@@ -68,7 +68,7 @@ async function searchForACoin(searchQuery, categoryQuery){
     try{
         isLoading()
 
-        const rawFetch = await fetch(` https://cryptostats-backend.onrender.com/api/search?searchQuery=${searchQuery}&categoryQuery=${categoryQuery}`)
+        const rawFetch = await fetch(` http://localhost:3000/api/search?searchQuery=${searchQuery}&categoryQuery=${categoryQuery}`)
 
         const coinsInfo = await rawFetch.json()
 

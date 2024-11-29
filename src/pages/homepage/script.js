@@ -2,11 +2,23 @@ const favoriteCoinsContainer = document.querySelector(".other-coins")
 const mainCoinContainer = document.querySelector(".main-goes-here")
 const favoriteCoinsForm = document.querySelector("#fav-search")
 const favoriteCoinsSearchBar = document.querySelector("#fav-search input")
+const currencySelect = document.querySelector("#currency-selector")
 
+
+//Event Listeners
 favoriteCoinsForm.addEventListener("submit", (e)=>{
   e.preventDefault()
   searchForFavoriteCoin(favoriteCoinsSearchBar.value)
 })
+
+currencySelect.addEventListener("change", async (e)=>{
+  await chrome.storage.local.set({currentCurrency : currencySelect.value})
+
+  getFavoriteCoinsFromStorageAndDisplayThem()
+})
+//
+
+init()
 
 function searchForFavoriteCoin(searchParameter){
   const filteredCoins = allCoins.filter((coin)=> coin.name.toLowerCase().includes(searchParameter.toLowerCase()))
@@ -26,12 +38,18 @@ async function getFavoriteCoinsFromStorageAndDisplayThem(){
 
         const coinsInStorageArray = coinsInStorage.favoriteCoins || []
 
+        const currencyInStorage = await chrome.storage.local.get(["currentCurrency"])
+
+        const currentCurrencyValue = currencyInStorage.currentCurrency || "usd"
+
         if(coinsInStorageArray.length == 0){
             return isEmptyFavorite()
         }else{
-            isLoading()
+          mainCoinContainer.innerHTML = ""
 
-            const rawFetch = await fetch(` https://cryptostats-backend.onrender.com/api/displayFavorite?coinNames=${coinsInStorageArray}`)
+          isLoading()
+
+            const rawFetch = await fetch(`http://localhost:3000/api/displayFavorite?coinNames=${coinsInStorageArray}&currency=${currentCurrencyValue}`)
 
             const coinsInfo = await rawFetch.json()
 
@@ -43,11 +61,11 @@ async function getFavoriteCoinsFromStorageAndDisplayThem(){
 
         const [mainCoin] = coinsInfo.splice(0, 1)
 
-        mainCoinContainer.innerHTML = renderMainCoin(mainCoin)
+        mainCoinContainer.innerHTML = renderMainCoin(mainCoin, currentCurrencyValue)
 
         draw(mainCoin.sparkline_in_7d.price, mainCoin.sparkline_in_7d.price.length, mainCoin.price_change_percentage_24h)
 
-        favoriteCoinsContainer.innerHTML = renderFavoriteCoins(coinsInfo)
+        favoriteCoinsContainer.innerHTML = renderFavoriteCoins(coinsInfo, currentCurrencyValue)
 
         }
     }
@@ -92,13 +110,15 @@ function isEmptyFavoriteSearch(){
   favoriteCoinsContainer.innerHTML = a
 }
 
-function isError(errorMessage="Seems like an error ocurred, please try reloading the extension", type="strong"){
+function isError(errorMessage="Seems like an error occurred, please try reloading the extension", type="strong"){
   const a = `<p class=${type == "strong" ? "error" : "empty"}>${errorMessage}</p>`
   favoriteCoinsContainer.innerHTML = a
 }
 
-function renderFavoriteCoins(coinsInfo){
+function renderFavoriteCoins(coinsInfo, currency){
     let a = ""
+
+    const currencySymbol = getCurrencySymbol(currency)
 
     coinsInfo.forEach((coinInfo)=>{
             const status = coinInfo.price_change_percentage_24h > 0 ? "good" : "bad"
@@ -131,7 +151,7 @@ function renderFavoriteCoins(coinsInfo){
             </div>
 
             <div class="price-info">
-                <h1>$${price}</h1>
+                <h1>${currencySymbol}${price}</h1>
                 <p class=${status}>${statusSymbol}${priceChange || 0}%</p>
             </div>
         </div>
@@ -141,8 +161,8 @@ function renderFavoriteCoins(coinsInfo){
     return a
 }
 
-function renderMainCoin(mainCoinInfo){
-    console.log(mainCoinInfo)
+function renderMainCoin(mainCoinInfo, currency){
+            const currencySymbol = getCurrencySymbol(currency)
             let a = ""
 
             const status = mainCoinInfo.price_change_percentage_24h > 0 ? "good" : "bad"
@@ -175,7 +195,7 @@ function renderMainCoin(mainCoinInfo){
             </div>
 
             <div class="top-price-and-increase">
-                <h1>$${price}</h1>
+                <h1>${currencySymbol}${price}</h1>
                 <p class=${status}>${statusSymbol}${priceChange || 0}%</p>
             </div>
         </div>
@@ -268,4 +288,43 @@ function draw(dataArray, numPoints, priceChange){
   
 }
 
-getFavoriteCoinsFromStorageAndDisplayThem()
+function getCurrencySymbol(shortFormOfCurrency){
+  if(shortFormOfCurrency == "usd"){
+    return "$"
+  }else if(shortFormOfCurrency == "ngn"){
+    return "N"
+  }else if(shortFormOfCurrency == "ngn"){
+    return "N"
+  }else if(shortFormOfCurrency == "eur"){
+    return "€"
+  }else if(shortFormOfCurrency == "aud"){
+    return "AU$"
+  }else if(shortFormOfCurrency == "php"){
+    return "₱"
+  }else if(shortFormOfCurrency == "aed"){
+    return "د.إ"
+  }else if(shortFormOfCurrency == "nzd"){
+    return "NZ$"
+  }else if(shortFormOfCurrency == "btc"){
+    return "₿"
+  }
+}
+
+async function updateSelectContainer(){
+  const currencyInStorage = await chrome.storage.local.get(["currentCurrency"])
+
+    const currentCurrencyValue = currencyInStorage.currentCurrency || "usd"
+
+    const allOptions = currencySelect.options
+
+    for(option of allOptions){
+      if(option.value == currentCurrencyValue){
+        option.selected = true
+      }
+    }
+}
+
+function init(){
+  updateSelectContainer()
+  getFavoriteCoinsFromStorageAndDisplayThem()
+}
