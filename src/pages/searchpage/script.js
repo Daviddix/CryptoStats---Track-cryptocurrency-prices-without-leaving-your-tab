@@ -67,8 +67,11 @@ async function getTrendingCoinsFromAllChains(){
 async function searchForACoin(searchQuery, categoryQuery){
     try{
         isLoading()
+        const currencyInStorage = await chrome.storage.local.get(["currentCurrency"])
 
-        const rawFetch = await fetch(` http://localhost:3000/api/search?searchQuery=${searchQuery}&categoryQuery=${categoryQuery}`)
+        const currentCurrencyValue = currencyInStorage.currentCurrency || "usd"
+
+        const rawFetch = await fetch(` http://localhost:3000/api/search?searchQuery=${searchQuery}&categoryQuery=${categoryQuery}&currency=${currentCurrencyValue}`)
 
         const coinsInfo = await rawFetch.json()
 
@@ -81,7 +84,7 @@ async function searchForACoin(searchQuery, categoryQuery){
         }
 
 
-        allCoinsContainer.innerHTML = renderSearchedCoins(coinsInfo)
+        allCoinsContainer.innerHTML = renderSearchedCoins(coinsInfo, currentCurrencyValue)
 
     }
     catch(err){
@@ -121,7 +124,7 @@ function isLoading(){
         allCoinsContainer.innerHTML = a
 }
 
-function isError(errorMessage="Seems like an error ocurred, please try reloading the extension", type="strong"){
+function isError(errorMessage="Seems like an error occurred, please try reloading the extension", type="strong"){
     const a = `<p class=${type == "strong" ? "error" : "empty"}>${errorMessage}</p>`
         allCoinsContainer.innerHTML = a
 }
@@ -154,8 +157,10 @@ async function removeFromFavorites(coinName){
     await chrome.storage.local.set({favoriteCoins : newArray})
 }
 
-function renderSearchedCoins(coinsInfo){
+function renderSearchedCoins(coinsInfo, currency){
     let a = ""
+
+    const currencySymbol = getCurrencySymbol(currency)
 
     coinsInfo.forEach((coinInfo)=>{
             const status = coinInfo.price_change_percentage_24h > 0 ? "good" : "bad"
@@ -189,7 +194,7 @@ function renderSearchedCoins(coinsInfo){
             </div>
 
             <div class="price-info">
-                <h1>$${price}</h1>
+                <h1>${currencySymbol}${price}</h1>
                 <p class=${status}>${statusSymbol}${priceChange || 0}%</p>
             </div>
 
@@ -247,5 +252,27 @@ function renderTrendingCoins(coins, favoriteCoinsArray){
 
     return a
 }
+
+function getCurrencySymbol(shortFormOfCurrency){
+    if(shortFormOfCurrency == "usd"){
+      return "$"
+    }else if(shortFormOfCurrency == "ngn"){
+      return "N"
+    }else if(shortFormOfCurrency == "ngn"){
+      return "N"
+    }else if(shortFormOfCurrency == "eur"){
+      return "€"
+    }else if(shortFormOfCurrency == "aud"){
+      return "AU$"
+    }else if(shortFormOfCurrency == "php"){
+      return "₱"
+    }else if(shortFormOfCurrency == "aed"){
+      return "د.إ"
+    }else if(shortFormOfCurrency == "nzd"){
+      return "NZ$"
+    }else if(shortFormOfCurrency == "btc"){
+      return "₿"
+    }
+  }
 
 getTrendingCoinsFromAllChains()
