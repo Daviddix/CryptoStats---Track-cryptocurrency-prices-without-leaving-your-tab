@@ -48,7 +48,7 @@ async function getTrendingCoinsFromAllChains(){
 
         const coinsInStorageArray = coinsInStorage.favoriteCoins || []
 
-        const rawFetch = await fetch("http://localhost:3000/api/getTrendingCoins")
+        const rawFetch = await fetch("https://cryptostats-backend.onrender.com/api/getTrendingCoins")
 
         const coins = await rawFetch.json()
 
@@ -71,7 +71,7 @@ async function searchForACoin(searchQuery, categoryQuery){
 
         const currentCurrencyValue = currencyInStorage.currentCurrency || "usd"
 
-        const rawFetch = await fetch(` http://localhost:3000/api/search?searchQuery=${searchQuery}&categoryQuery=${categoryQuery}&currency=${currentCurrencyValue}`)
+        const rawFetch = await fetch(` https://cryptostats-backend.onrender.com/api/search?searchQuery=${searchQuery}&categoryQuery=${categoryQuery}&currency=${currentCurrencyValue}`)
 
         const coinsInfo = await rawFetch.json()
 
