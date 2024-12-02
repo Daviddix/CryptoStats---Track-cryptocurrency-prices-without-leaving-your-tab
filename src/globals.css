@@ -31,7 +31,6 @@ body{
     padding: 2rem;
     background-color: hsl(252, 20%, 5%);
     margin: auto;
-    min-height:30rem;
 }
 
 form{
